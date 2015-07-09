@@ -69,3 +69,10 @@ ol.radio > li {
 #radio-ar-all {
   width: 20%;
 }
+
+/* Legend */
+.legend-color {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+}

@@ -94,26 +94,38 @@ privately( function(){
     CONTINENT_KEY = 'WMO Region Symbol',
     ROOT_NODE = 'root';
 
-  var continentsTranslation = {
-    'NAC' : 'North America, Central America and the Caribbean',
-    'EUR' : 'Europe',
-    'WMONA' : 'Non Available',
-    'SWP' : 'South-West Pacific',
-    'ASI' : 'Asia',
-    'AFR' : 'Africa',
-    'SAM' : 'South America'
-  };
-
-  // Continents Color on the TreeMap
-  // Change here to set some new colors for the TreeMap first view
-  var continentsColor = {
-    'NAC' : '#44a3c7',
-    'EUR' : '#315b66',
-    'WMONA' : '#695e9f',
-    'SWP' : '#953a24',
-    'ASI' : '#d7832e',
-    'AFR' : '#cccf5f',
-    'SAM' : '#5bae66'
+  // Continents settings for the TreeMap
+  // The color attribute is used to set the color of the tile
+  // The name attribute is used to translate the WMO Region Symbol
+  var continentsSettings = {
+    'AFR' : {
+      'color' : '#cccf5f',
+      'name' : 'Africa'
+    },
+    'ASI' : {
+      'color' : '#d7832e',
+      'name' : 'Asia'
+    },
+    'EUR' : {
+      'color' : '#315b66',
+      'name' : 'Europe'
+    },
+    'NAC' : {
+      'color' : '#44a3c7',
+      'name' : 'North America, Central America and the Caribbean'
+    },
+    'SAM' : {
+      'color' : '#5bae66',
+      'name' : 'South America'
+    },
+    'SWP' : {
+      'color' : '#953a24',
+      'name' : 'South-West Pacific'
+    },
+    'WMONA' : {
+      'color' : '#695e9f',
+      'name' : 'Non Available'
+    }
   };
 
   d3.tsv(
@@ -309,15 +321,15 @@ privately( function(){
 
     function name(d) {
       return d.parent
-          ? name(d.parent) + " > " + translate(continentsTranslation, d.name)
-          : translate(continentsTranslation, d.name);
+          ? name(d.parent) + " > " + translate(continentsSettings, d.name)
+          : translate(continentsSettings, d.name);
     }
 
     // If 'string' is a key of 'dictionary', return its value
     // Else return 'string'
     function translate(dictionary, string) {
       if( dictionary.hasOwnProperty(string) ) {
-        string = dictionary[string];
+        string = dictionary[string].name;
       }
       return string;
     }
@@ -328,7 +340,7 @@ privately( function(){
       if(node.type == ROOT_NODE) {
         result = null;
       } else if(node.type == CONTINENT_KEY) {
-        result = continentsColor[node.name];
+        result = continentsSettings[node.name].color;
       } else if(node.parent) {
         result = getNodeColor(node.parent);
       // Default fallback color as red
@@ -339,5 +351,17 @@ privately( function(){
       return result;
     }
   });
+
+  
+
+  $('#legend').append(
+    function() {
+      var html = '';
+      $.each(continentsSettings, function(key, value) {
+        html += '<div><div class="legend-color" style="background-color: ' + value.color + ';"></div>' + value.name + '</div>';
+      });
+      return html;
+    }
+  );
 
 });
