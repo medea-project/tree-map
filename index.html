@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy">
+  <head>
+    <meta charset="utf-8">
+    <title>Zoomable Treemaps</title>
+    <link rel="stylesheet" type="text/css" href="flare.css" />
+  </head>
+  <body>
+    <header>
+      <aside>June 8, 2012</aside>
+      <a href="../" rel="author">Mike Bostock</a>
+      <br/>
+      <aside>August 26, 2014</aside>
+      <a href="../../../../index.html" rel="author"
+        >Modified by Eric Bréchemier for MEDEA</a>
+    </header>
+
+    <h1>Zoomable Treemaps</h1>
+
+    <p id="chart"></p>
+
+    <fieldset class="radio">
+      <ol class="radio">
+        <li>
+          <input type="radio" name="ar" value="AR1" id="radio-ar1" />
+          AR 1
+        </li>
+        <li>
+          <input type="radio" name="ar" value="AR2" id="radio-ar2" />
+          AR 2
+        </li>
+        <li>
+          <input type="radio" name="ar" value="AR3" id="radio-ar3" />
+          AR 3
+        </li>
+        <li>
+          <input type="radio" name="ar" value="AR4" id="radio-ar4" />
+          AR 4
+        </li>
+        <li>
+          <input type="radio" name="ar" value="AR5" id="radio-ar5" />
+          AR 5
+        </li>
+        <li>
+          <input type="radio" name="ar" value="ALL" id="radio-all-ar" />
+          ALL
+        </li>
+      </ol>
+    </fieldset>
+
+    <aside class="hint">Click any cell to zoom in, or the black row at the top to zoom out.</aside>
+
+    <p>Treemaps are a form of <a href="http://mbostock.github.com/d3/ex/treemap.html">space</a><a href="http://mbostock.github.com/d3/ex/pack.html">-filling</a> <a href="http://mbostock.github.com/d3/ex/sunburst.html">layout</a> where the area of each rectangle is proportional to its value.</p>
+
+    <p>
+    This example shows the participations of IPCC Authors grouped by:
+    </p>
+
+    <ol>
+      <li>WMO Region (color)</li>
+      <li>Country (text)</li>
+      <li>Institution Type (color)</li>
+      <li>Institution (text)</li>
+      <li>Role (color)</li>
+      <li>Author (text)</li>
+    </ol>
+
+    <p>Treemaps visualize hierarchical data, but since often only the leaf nodes (files rather than folders) are drawn, it can be difficult to see the hierarchy. <a href="http://en.wikipedia.org/wiki/File:Tree_Map.png">Padding</a> is sometimes used to show the hierarchy via containment, though this introduces area distortion. <a href="http://www.win.tue.nl/~vanwijk/ctm.pdf">Cushion gradients</a> also indicate hierarchy, but are somewhat unintuitive (or perhaps just ugly).</p>
+
+    <p>The treemap above uses interaction to reveal the hierarchy incrementally: clicking on a node zooms in. Only two levels of the hierarchy are visible at a time. This allows the layout’s aspect ratio (ideally φ) to be optimized for the current view, rather than computing a global layout. It also allows the exploration of arbitrarily-large datasets: data can be lazily-loaded and positioned on zoom!</p>
+
+    <p>This visualization is implemented in <a href="http://d3js.org">D3.js</a>, based on an <a href="http://mbostock.github.com/d3/talk/20111018/treemap.html">earlier version</a> from [Mike Bostock's] talk at SVG Open. Also see Nicolas Garcia Belmonte’s zoomable treemap of <a href="http://thejit.org/static/v20/Jit/Examples/Treemap/example1.html">music albums</a>, and The New York Times’ free-form zooming for <a href="http://www.nytimes.com/packages/html/newsgraphics/2011/0119-budget/">Obama’s 2012 budget proposal</a>. Note the subtle differences in behavior!</p>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="flare.js"></script>
+  </body>
+</html>
