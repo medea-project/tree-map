@@ -96,9 +96,24 @@ privately( function(){
     ROLE_KEY = 'Role Symbol',
     colorScales = {};
 
-  colorScales[ CONTINENT_KEY ] = d3.scale.category10();
   colorScales[ INSTITUTION_TYPE_KEY ] = d3.scale.category20();
   colorScales[ ROLE_KEY ] = d3.scale.category20b();
+
+  // Continents Color on the TreeMap
+  // Change here to set some new colors for the TreeMap first view
+  var continentsColor = {
+    'NAC' : '#44a3c7',
+    'EUR' : '#315b66',
+    'WMONA' : '#695e9f',
+    'SWP' : '#953a24',
+    'ASI' : '#d7832e',
+    'AFR' : '#cccf5f',
+    'SAM' : '#5bae66'
+  };
+
+  colorScales[ CONTINENT_KEY ] = function(x) {
+    return continentsColor[x];
+  };
 
   d3.tsv(
     "count-participations-by-ar-author-role-institution-country.tsv",
