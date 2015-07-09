@@ -92,12 +92,7 @@ privately( function(){
 
   var
     CONTINENT_KEY = 'WMO Region Symbol',
-    INSTITUTION_TYPE_KEY = 'Institution Type Symbol',
-    ROLE_KEY = 'Role Symbol',
-    colorScales = {};
-
-  colorScales[ INSTITUTION_TYPE_KEY ] = d3.scale.category20();
-  colorScales[ ROLE_KEY ] = d3.scale.category20b();
+    ROOT_NODE = 'root';
 
   var continentsTranslation = {
     'NAC' : 'North America, Central America and the Caribbean',
@@ -121,32 +116,11 @@ privately( function(){
     'SAM' : '#5bae66'
   };
 
-  colorScales[ CONTINENT_KEY ] = function(x) {
-    return continentsColor[x];
-  };
-
-  // Continents Color on the TreeMap
-  // Change here to set some new colors for the TreeMap first view
-  /*
-  var continentsColor = {
-    'NAC' : '#44a3c7',
-    'EUR' : '#315b66',
-    'WMONA' : '#695e9f',
-    'SWP' : '#953a24',
-    'ASI' : '#d7832e',
-    'AFR' : '#cccf5f',
-    'SAM' : '#5bae66'
-  };
-  colorScales[ INSTITUTION_TYPE_KEY ] = function(x) {
-    return institutionsColor[x];
-  };
-  */
-
   d3.tsv(
     "count-participations-by-ar-author-role-institution-country.tsv",
     function(rows) {
       var
-        root = createTreeNode( "IPCC", "root" );
+        root = createTreeNode( "IPCC", ROOT_NODE );
 
       forEach( rows, function( row ) {
         var
@@ -162,9 +136,7 @@ privately( function(){
           node.ALL += count;
           node.color = color;
 
-          if ( colorScales.hasOwnProperty( key ) ) {
-            color = colorScales[ key ]( value );
-          }
+          color = getNodeColor(node);
 
           if ( key === AR || key === COUNT_KEY ) {
             delete node._children;
@@ -219,7 +191,6 @@ privately( function(){
 
     function display(d) {
       grandparent
-          //# .datum(d.parent ? d.parent.parent : null)
           .datum(d.parent)
           .on("click", function(d) { transition(d, 500); })
           .select("text")
@@ -248,19 +219,11 @@ privately( function(){
 
       childCell.append("rect")
           .attr("class", "child")
-          //# .classed("has-children", function(d) { return d._children; })
-          //# .on("click", function(d){ transition(d, 1000) })
           .call(rect)
           .append("title")
           .text(function(d) { return d.name; });
 
-      /*
-      childCell.append("text")
-          .attr("dy", ".35em")
-          .text(function(d) { return d.name; })
-          .call(text);
-      */
-      if ( d.type === 'root' ) {
+      if ( d.type === ROOT_NODE ) {
         /* display text of children */
         childCell.append("text")
             .attr("dy", ".35em")
@@ -275,7 +238,6 @@ privately( function(){
       }
 
       function transition(d, duration) {
-        //# if (transitioning || !d || !d._children) return;
         if (transitioning || !d) return;
         duration = or(duration, 0);
         transitioning = true;
@@ -347,16 +309,34 @@ privately( function(){
 
     function name(d) {
       return d.parent
-          //# ? name(d.parent.parent) + " > " + d.name
           ? name(d.parent) + " > " + translate(continentsTranslation, d.name)
           : translate(continentsTranslation, d.name);
     }
 
+    // If 'string' is a key of 'dictionary', return its value
+    // Else return 'string'
     function translate(dictionary, string) {
       if( dictionary.hasOwnProperty(string) ) {
         string = dictionary[string];
       }
       return string;
+    }
+
+    // Generate the code node
+    // It should be the color of the continent attached to this tile
+    function getNodeColor(node) {
+      if(node.type == ROOT_NODE) {
+        result = null;
+      } else if(node.type == CONTINENT_KEY) {
+        result = continentsColor[node.name];
+      } else if(node.parent) {
+        result = getNodeColor(node.parent);
+      // Default fallback color as red
+      // This should never happen
+      } else {
+        result = '#ff0000';
+      }
+      return result;
     }
   });
 
