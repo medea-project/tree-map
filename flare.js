@@ -99,6 +99,16 @@ privately( function(){
   colorScales[ INSTITUTION_TYPE_KEY ] = d3.scale.category20();
   colorScales[ ROLE_KEY ] = d3.scale.category20b();
 
+  var continentsTranslation = {
+    'NAC' : 'North America, Central America and the Caribbean',
+    'EUR' : 'Europe',
+    'WMONA' : 'Non Available',
+    'SWP' : 'South-West Pacific',
+    'ASI' : 'Asia',
+    'AFR' : 'Africa',
+    'SAM' : 'South America'
+  };
+
   // Continents Color on the TreeMap
   // Change here to set some new colors for the TreeMap first view
   var continentsColor = {
@@ -114,6 +124,23 @@ privately( function(){
   colorScales[ CONTINENT_KEY ] = function(x) {
     return continentsColor[x];
   };
+
+  // Continents Color on the TreeMap
+  // Change here to set some new colors for the TreeMap first view
+  /*
+  var continentsColor = {
+    'NAC' : '#44a3c7',
+    'EUR' : '#315b66',
+    'WMONA' : '#695e9f',
+    'SWP' : '#953a24',
+    'ASI' : '#d7832e',
+    'AFR' : '#cccf5f',
+    'SAM' : '#5bae66'
+  };
+  colorScales[ INSTITUTION_TYPE_KEY ] = function(x) {
+    return institutionsColor[x];
+  };
+  */
 
   d3.tsv(
     "count-participations-by-ar-author-role-institution-country.tsv",
@@ -192,9 +219,10 @@ privately( function(){
 
     function display(d) {
       grandparent
-          .datum(d.parent? d.parent.parent : null)
+          //# .datum(d.parent ? d.parent.parent : null)
+          .datum(d.parent)
           .on("click", function(d) { transition(d, 500); })
-        .select("text")
+          .select("text")
           .text(name(d));
 
       var g1 = svg.insert("g", ".grandparent")
@@ -206,7 +234,12 @@ privately( function(){
         .enter().append("g");
 
       g.filter(function(d) { return d._children; })
-          .classed("children", true);
+          .classed("children", true)
+          .on("click", function(d){ transition(d, 1000) });
+
+      g.append("rect")
+          .attr("class", "parent")
+          .call(rect);
 
       var childCell =
         g.selectAll(".child")
@@ -215,19 +248,35 @@ privately( function(){
 
       childCell.append("rect")
           .attr("class", "child")
-          .classed("has-children", function(d) { return d._children; })
-          .on("click", function(d){ transition(d, 1000) })
+          //# .classed("has-children", function(d) { return d._children; })
+          //# .on("click", function(d){ transition(d, 1000) })
           .call(rect)
-        .append("title")
+          .append("title")
           .text(function(d) { return d.name; });
 
+      /*
       childCell.append("text")
           .attr("dy", ".35em")
           .text(function(d) { return d.name; })
           .call(text);
+      */
+      if ( d.type === 'root' ) {
+        /* display text of children */
+        childCell.append("text")
+            .attr("dy", ".35em")
+            .text(function(d) { return d.name; })
+            .call(text);
+      } else {      
+        /* display text of parent */
+        g.append("text")
+            .attr("dy", ".75em")
+            .text(function(d) { return d.name; })
+            .call(text);
+      }
 
       function transition(d, duration) {
-        if (transitioning || !d || !d._children) return;
+        //# if (transitioning || !d || !d._children) return;
+        if (transitioning || !d) return;
         duration = or(duration, 0);
         transitioning = true;
 
@@ -298,8 +347,16 @@ privately( function(){
 
     function name(d) {
       return d.parent
-          ? name(d.parent.parent) + " > " + d.name
-          : d.name;
+          //# ? name(d.parent.parent) + " > " + d.name
+          ? name(d.parent) + " > " + translate(continentsTranslation, d.name)
+          : translate(continentsTranslation, d.name);
+    }
+
+    function translate(dictionary, string) {
+      if( dictionary.hasOwnProperty(string) ) {
+        string = dictionary[string];
+      }
+      return string;
     }
   });
 
