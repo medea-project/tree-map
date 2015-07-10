@@ -16,7 +16,7 @@ privately( function(){
 
     forEach( ids, function( id ) {
       var input = document.getElementById( id );
-      input.onclick = function(){
+      input.onclick = function() {
         arFilter = input.value;
         refreshTreemap();
       };
@@ -217,8 +217,7 @@ privately( function(){
         .enter().append("g");
 
       g.filter(function(d) { return d._children; })
-          .classed("children", true)
-          .on("click", function(d){ transition(d, 1000) });
+          .classed("children", true);
 
       g.append("rect")
           .attr("class", "parent")
@@ -239,6 +238,17 @@ privately( function(){
             .attr("dy", ".35em")
             .text(function(d) { return d.name; })
             .call(text);
+
+      // Add interaction on click on tiles
+      // Add interaction only if this object has children to display
+      g.selectAll(".child")
+        .on('click', function(d) {
+          if(d.hasOwnProperty('_children')) {
+            transition(d.parent, 1000);
+          } else {
+            return false;
+          }
+        });
 
       function transition(d, duration) {
         if (transitioning || !d) return;
