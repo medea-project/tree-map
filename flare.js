@@ -235,19 +235,10 @@ privately( function(){
           .append("title")
           .text(function(d) { return d.name; });
 
-      if ( d.type === ROOT_NODE ) {
-        /* display text of children */
-        childCell.append("text")
+      childCell.append("text")
             .attr("dy", ".35em")
             .text(function(d) { return d.name; })
             .call(text);
-      } else {      
-        /* display text of parent */
-        g.append("text")
-            .attr("dy", ".75em")
-            .text(function(d) { return d.name; })
-            .call(text);
-      }
 
       function transition(d, duration) {
         if (transitioning || !d) return;
