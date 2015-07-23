@@ -201,12 +201,12 @@ privately( function(){
       }
     }
 
-    function display(d, n) {
+    function display(d) {
       grandparent
           .datum(d.parent)
           .on("click", function(d) { transition(d, 500); })
           .select("text")
-          .text(name(d, n));
+          .text(name(d));
 
       var g1 = svg.insert("g", ".grandparent")
           .datum(d)
@@ -244,18 +244,18 @@ privately( function(){
       g.selectAll(".child")
         .on('click', function(d) {
           if(d.hasOwnProperty('_children')) {
-            transition(d.parent, 1000, d.name);
+            transition(d.parent, 1000);
           } else {
             return false;
           }
         });
 
-      function transition(d, duration, name) {
+      function transition(d, duration) {
         if (transitioning || !d) return;
         duration = or(duration, 0);
         transitioning = true;
 
-        var g2 = display(d, name),
+        var g2 = display(d),
             t1 = g1.transition().duration(duration),
             t2 = g2.transition().duration(duration);
 
@@ -320,9 +320,9 @@ privately( function(){
           .attr("fill", function(d) { return d.color; });
     }
 
-    function name(d, n) {
+    function name(d) {
       return d.parent
-          ? name(d.parent) + " > " + translate(continentsSettings, d.name) + ((n) ? " > " + n : '')
+          ? name(d.parent) + " > " + translate(continentsSettings, d.name)
           : translate(continentsSettings, d.name);
     }
 
