@@ -18,12 +18,11 @@ text {
 
 rect {
   stroke: #fff;
-  stroke-width: 2px;
 }
 
 rect.parent,
 .grandparent rect {
-  stroke-width: 2px;
+  stroke-width: 5px;
 }
 
 .grandparent rect {
