@@ -25,8 +25,13 @@ privately( function(){
     document.getElementById( ids[ids.length-1] ).checked = true;
   });
 
+function drawTreemap() {
+  // Clear content
+  $('#chart').html('');
+  $('#legend').html('');
+
   var margin = {top: 40, right: 0, bottom: 0, left: 0},
-      width = 960,
+      width = $("#chart").width(),
       height = 500 - margin.top - margin.bottom,
       formatNumber = d3.format(",d"),
       transitioning;
@@ -353,8 +358,6 @@ privately( function(){
     }
   });
 
-  
-
   $('#legend').append(
     function() {
       var html = '';
@@ -364,5 +367,12 @@ privately( function(){
       return html;
     }
   );
+}
+
+drawTreemap();
+
+  $(window).resize(function () {
+    drawTreemap();
+  });
 
 });
